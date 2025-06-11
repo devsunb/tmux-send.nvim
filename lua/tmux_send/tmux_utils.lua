@@ -44,8 +44,8 @@ M.full_command_of_pane = function(pane_identifier)
     return nil
   end
 
-  local list_pane = vim.fn.system("tmux list-panes -t '" .. pane_identifier .. "'")
-  if vim.v.shell_error ~= 0 or list_pane == nil or list_pane == "" then
+  vim.fn.system("tmux list-panes -F '#{pane_index}' | grep -q '^" .. pane_identifier .. "$'")
+  if vim.v.shell_error ~= 0 then
     notify(
       "Can't find the tmux pane using the identifier " .. pane_identifier,
       vim.log.levels.ERROR,
@@ -156,8 +156,8 @@ end
 M.paste_to_pane = function(content, pane_identifier, opts)
   local target_program = opts.target_program or "others"
 
-  local list_pane = vim.fn.system("tmux list-panes -t '" .. pane_identifier .. "'")
-  if vim.v.shell_error ~= 0 or list_pane == nil or list_pane == "" then
+  vim.fn.system("tmux list-panes -F '#{pane_index}' | grep -q '^" .. pane_identifier .. "$'")
+  if vim.v.shell_error ~= 0 then
     notify(
       "Can't find the tmux pane using the identifier " .. pane_identifier,
       vim.log.levels.ERROR,
